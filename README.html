@@ -30,17 +30,17 @@
   <div id="price">Loading...</div>
 
   <script>
-    const goldSymbol = 'GC=F';
-    const url = `https://api.allorigins.win/raw?url=${encodeURIComponent('https://query1.finance.yahoo.com/v7/finance/quote?symbols=' + goldSymbol)}`;
+    const apiKey = 'your_api_key_here'; // 🔑 Replace this with your real API key
+    const url = `https://metals-api.com/api/latest?access_key=${apiKey}&base=USD&symbols=XAU`;
 
     fetch(url)
       .then(res => res.json())
       .then(data => {
-        const price = data.quoteResponse.result[0].regularMarketPrice;
-        document.getElementById('price').textContent = `$${price.toFixed(2)}`;
+        const pricePerOunce = 1 / data.rates.XAU;
+        document.getElementById('price').textContent = `$${pricePerOunce.toFixed(2)}`;
       })
-      .catch(error => {
-        console.error('Failed to fetch gold price:', error);
+      .catch(err => {
+        console.error(err);
         document.getElementById('price').textContent = 'Failed to load';
       });
   </script>
