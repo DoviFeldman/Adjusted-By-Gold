@@ -100,6 +100,35 @@
             border: 2px solid #4CAF50;
         }
         
+        .gold-update {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+        
+        .gold-update input {
+            width: 120px;
+            padding: 8px;
+        }
+        
+        .gold-update button, .gold-update a {
+            padding: 8px 12px;
+            background: #DAA520;
+            color: white;
+            text-decoration: none;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .gold-update button:hover, .gold-update a:hover {
+            background: #B8860B;
+        }
+        
         .pdf-section {
             margin-top: 40px;
             display: grid;
@@ -183,7 +212,12 @@ Adjust by gold to see the real inflation numbers.
         </p>
         
         <div class="current-gold" id="currentGoldPrice">
-            <span class="loading">Loading current gold price...</span>
+            <div><strong>Current Gold Price: $<span id="goldPriceValue">3400</span> per ounce</strong> (as of July 2025)</div>
+            <div class="gold-update">
+                <input type="number" id="newGoldPrice" placeholder="New price" step="0.01">
+                <button onclick="updateGoldPrice()">Update Price</button>
+                <a href="https://www.google.com/search?q=gold+price" target="_blank">Check Google</a>
+            </div>
         </div>
         
         <div class="calculator">
@@ -215,7 +249,11 @@ Adjust by gold to see the real inflation numbers.
             <div class="suggestion-box">
                 <h3>Try This:</h3>
                 <p>Put in the price of your parents' house and the year they bought it, and then put in their hourly wage of the same year.</p>
-                <p style="margin-top: 10px;">See how different purchases compare when measured in gold rather than dollars!</p>
+<p style="margin-top: 10px;">
+  minimum wage was $1.60 an hour in 1970 equivalent to $150 an hour today! Minimum wage! per hour!<br>
+  Real estate isn't an investment, it's just a way to keep your money against the government's inflation!<br>
+  That's why big corporations are buying homes now but they never did in the past! If they would have kept on the gold standard it would still be the same price as back then!
+</p>
             </div>
         </div>
     </div>
@@ -249,31 +287,16 @@ Adjust by gold to see the real inflation numbers.
             2021: 1799.02, 2022: 1802.45, 2023: 1943.96, 2024: 2406.55, 2025: 3111.39
         };
 
-        let currentGoldPrice = 3,400; // Fallback price
+        let currentGoldPrice = 3400; // Default gold price - UPDATE THIS MONTHLY, todays july 23rd, 2025
 
-        // Fetch current gold price
-        async function fetchCurrentGoldPrice() {
-            // try {
-            //     // Using a free API that doesn't require API key
-            //     const response = await fetch('https://api.metals.live/v1/spot/gold');
-            //     const data = await response.json();
-            //     currentGoldPrice = data.price;
-            //     document.getElementById('currentGoldPrice').innerHTML = 
-            //         `<strong>Current Gold Price: $${currentGoldPrice.toFixed(2)} per ounce</strong>`;
-            // } catch (error) {
-            //     // Fallback to Yahoo Finance or use default
-                try {
-                    const response = await fetch('https://query1.finance.yahoo.com/v8/finance/chart/GC=F');
-                    const data = await response.json();
-                    currentGoldPrice = data.chart.result[0].meta.regularMarketPrice;
-                    document.getElementById('currentGoldPrice').innerHTML = 
-                        `<strong>Current Gold Price: $${currentGoldPrice.toFixed(2)} per ounce</strong>`;
-                } catch (fallbackError) {
-                    document.getElementById('currentGoldPrice').innerHTML = 
-                        `<strong>Current Gold Price: ~$${currentGoldPrice.toFixed(2)} per ounce</strong> <span class="error">(Live price unavailable)</span>`;
-                }
+        function updateGoldPrice() {
+            const newPrice = parseFloat(document.getElementById('newGoldPrice').value);
+            if (newPrice && newPrice > 0) {
+                currentGoldPrice = newPrice;
+                document.getElementById('goldPriceValue').textContent = newPrice.toFixed(0);
+                document.getElementById('newGoldPrice').value = '';
+                calculateGoldValue();
             }
-            calculateGoldValue();
         }
 
         function calculateGoldValue() {
@@ -303,11 +326,7 @@ Adjust by gold to see the real inflation numbers.
         document.getElementById('year').addEventListener('input', calculateGoldValue);
 
         // Initialize
-        fetchCurrentGoldPrice();
         calculateGoldValue();
-
-        // // Update current price every 5 minutes
-        // setInterval(fetchCurrentGoldPrice, 300000);
     </script>
 </body>
 </html>
