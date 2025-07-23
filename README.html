@@ -1,14 +1,13 @@
 # Adjusted-By-Gold
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Gold Price</title>
   <style>
     body {
-      font-family: sans-serif;
-      background: #f6f6f6;
+      font-family: Arial, sans-serif;
+      background: #fefefe;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -17,13 +16,12 @@
       margin: 0;
     }
     h1 {
-      font-size: 2rem;
       color: #444;
     }
     #price {
       font-size: 3rem;
-      font-weight: bold;
       color: goldenrod;
+      margin-top: 1rem;
     }
   </style>
 </head>
@@ -33,18 +31,17 @@
 
   <script>
     const goldSymbol = 'GC=F';
-    const apiUrl = `https://api.allorigins.win/get?url=${encodeURIComponent('https://query1.finance.yahoo.com/v7/finance/quote?symbols=' + goldSymbol)}`;
+    const url = `https://api.allorigins.win/raw?url=${encodeURIComponent('https://query1.finance.yahoo.com/v7/finance/quote?symbols=' + goldSymbol)}`;
 
-    fetch(apiUrl)
+    fetch(url)
       .then(res => res.json())
       .then(data => {
-        const parsed = JSON.parse(data.contents);
-        const price = parsed.quoteResponse.result[0].regularMarketPrice;
+        const price = data.quoteResponse.result[0].regularMarketPrice;
         document.getElementById('price').textContent = `$${price.toFixed(2)}`;
       })
-      .catch(err => {
-        document.getElementById('price').textContent = 'Error loading price';
-        console.error(err);
+      .catch(error => {
+        console.error('Failed to fetch gold price:', error);
+        document.getElementById('price').textContent = 'Failed to load';
       });
   </script>
 </body>
