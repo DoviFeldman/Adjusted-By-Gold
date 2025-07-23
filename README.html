@@ -2,12 +2,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Gold Price</title>
   <style>
     body {
+      background: #fffbe6;
       font-family: Arial, sans-serif;
-      background: #fefefe;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -15,34 +15,19 @@
       height: 100vh;
       margin: 0;
     }
-    h1 {
-      color: #444;
+    iframe {
+      border: none;
+      width: 400px;
+      height: 200px;
     }
-    #price {
-      font-size: 3rem;
-      color: goldenrod;
-      margin-top: 1rem;
+    h1 {
+      margin-bottom: 10px;
+      color: #333;
     }
   </style>
 </head>
 <body>
-  <h1>Current Gold Price (USD)</h1>
-  <div id="price">Loading...</div>
-
-  <script>
-    const apiKey = 'your_api_key_here'; // 🔑 Replace this with your real API key
-    const url = `https://metals-api.com/api/latest?access_key=${apiKey}&base=USD&symbols=XAU`;
-
-    fetch(url)
-      .then(res => res.json())
-      .then(data => {
-        const pricePerOunce = 1 / data.rates.XAU;
-        document.getElementById('price').textContent = `$${pricePerOunce.toFixed(2)}`;
-      })
-      .catch(err => {
-        console.error(err);
-        document.getElementById('price').textContent = 'Failed to load';
-      });
-  </script>
+  <h1>Current Gold Price</h1>
+  <iframe src="https://www.google.com/search?q=gold+price+usd" title="Gold Price"></iframe>
 </body>
 </html>
