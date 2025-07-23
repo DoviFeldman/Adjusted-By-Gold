@@ -1,0 +1,51 @@
+# Adjusted-By-Gold
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Gold Price</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f6f6f6;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+    h1 {
+      font-size: 2rem;
+      color: #444;
+    }
+    #price {
+      font-size: 3rem;
+      font-weight: bold;
+      color: goldenrod;
+    }
+  </style>
+</head>
+<body>
+  <h1>Current Gold Price (USD)</h1>
+  <div id="price">Loading...</div>
+
+  <script>
+    const goldSymbol = 'GC=F';
+    const apiUrl = `https://api.allorigins.win/get?url=${encodeURIComponent('https://query1.finance.yahoo.com/v7/finance/quote?symbols=' + goldSymbol)}`;
+
+    fetch(apiUrl)
+      .then(res => res.json())
+      .then(data => {
+        const parsed = JSON.parse(data.contents);
+        const price = parsed.quoteResponse.result[0].regularMarketPrice;
+        document.getElementById('price').textContent = `$${price.toFixed(2)}`;
+      })
+      .catch(err => {
+        document.getElementById('price').textContent = 'Error loading price';
+        console.error(err);
+      });
+  </script>
+</body>
+</html>
