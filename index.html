@@ -300,16 +300,12 @@ Adjust by gold to see the real inflation numbers.
         }
 
         function calculateGoldValue() {
-             const dollarAmount = parseFloat(document.getElementById('dollarAmount').value) || 0;
-            const yearInput = document.getElementById('year').value;
+            const dollarAmount = parseFloat(document.getElementById('dollarAmount').value) || 0;
+            const year = parseInt(document.getElementById('year').value) || 1970;
             
-            // Don't calculate if year field is empty or being edited
-            if (!yearInput) return;
-            
-            const year = parseInt(yearInput);
             const historicalPrice = goldPrices[year];
             
-            if (!historicalPrice || year < 1833 || year > 2025) {
+            if (!historicalPrice) {
                 document.getElementById('results').innerHTML = 
                     '<div class="result-item error">Please enter a year between 1833 and 2025</div>';
                 return;
