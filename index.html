@@ -207,9 +207,9 @@ Adjust by gold to see the real inflation numbers.
             <div class="pdf-container">
                 <h3>Historical Gold Prices (1833-Present)</h3>
                 <embed src="historic_gold_prices_1833_pres.pdf" type="application/pdf" class="pdf-embed">
-                <p style="margin-top: 10px; font-size: 0.9em; color: #666;">
+<!--                 <p style="margin-top: 10px; font-size: 0.9em; color: #666;">
                     Right-click to download the PDF if needed
-                </p>
+                </p> -->
             </div>
             
             <div class="suggestion-box">
@@ -253,15 +253,15 @@ Adjust by gold to see the real inflation numbers.
 
         // Fetch current gold price
         async function fetchCurrentGoldPrice() {
-            try {
-                // Using a free API that doesn't require API key
-                const response = await fetch('https://api.metals.live/v1/spot/gold');
-                const data = await response.json();
-                currentGoldPrice = data.price;
-                document.getElementById('currentGoldPrice').innerHTML = 
-                    `<strong>Current Gold Price: $${currentGoldPrice.toFixed(2)} per ounce</strong>`;
-            } catch (error) {
-                // Fallback to Yahoo Finance or use default
+            // try {
+            //     // Using a free API that doesn't require API key
+            //     const response = await fetch('https://api.metals.live/v1/spot/gold');
+            //     const data = await response.json();
+            //     currentGoldPrice = data.price;
+            //     document.getElementById('currentGoldPrice').innerHTML = 
+            //         `<strong>Current Gold Price: $${currentGoldPrice.toFixed(2)} per ounce</strong>`;
+            // } catch (error) {
+            //     // Fallback to Yahoo Finance or use default
                 try {
                     const response = await fetch('https://query1.finance.yahoo.com/v8/finance/chart/GC=F');
                     const data = await response.json();
