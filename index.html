@@ -258,6 +258,341 @@
   That's why big corporations are buying homes now but they never did in the past! If they would have kept on the gold standard it would still be the same price as back then! -->
 </p>
             </div>
+            
+            <div class="suggestion-box" style="margin-top: 20px;">
+    <h3>Hourly Wage Comparison:</h3>
+    <p style="margin-bottom: 15px;">Put in your hourly wage and see how much it compares to minimum wage in 1970, the year before they left the gold standard</p>
+    
+    <div class="gold-update" style="margin-top: 15px;">
+        <input type="number" id="hourlyWage" placeholder="Your hourly wage" step="0.01" style="width: 150px;">
+        <span style="color: #856404; font-weight: bold; margin-left: 10px;">vs $1.60 (1970 min wage)</span>
+    </div>
+    
+    <div id="wageComparison" style="margin-top: 15px; font-weight: bold; color: #856404;"></div>
+</div>
+        </div>
+    </div>
+
+    <script>
+        // Historical gold prices data
+        const goldPrices = {
+            // 1833-1913 = $18.93
+            ...Array.from({length: 81}, (_, i) => ({[1833 + i]: 18.93})).reduce((a, b) => ({...a, ...b}), {}),
+            // 1914-1919 = $18.99
+            1914: 18.99, 1915: 18.99, 1916: 18.99, 1917: 18.99, 1918: 18.99, 1919: 18.99,
+            // From PDF data
+            1920: 20.68, 1921: 20.58, 1922: 20.66, 1923: 21.32, 1924: 20.69, 1925: 20.64,
+            1926: 20.63, 1927: 20.64, 1928: 20.66, 1929: 20.63, 1930: 20.65, 1931: 17.06,
+            1932: 20.69, 1933: 26.33, 1934: 34.69, 1935: 34.84, 1936: 34.87, 1937: 34.79,
+            1938: 34.85, 1939: 34.42, 1940: 33.85, 1941: 33.85, 1942: 33.85, 1943: 33.85,
+            1944: 33.85, 1945: 34.71, 1946: 34.71, 1947: 34.71, 1948: 34.71, 1949: 31.69,
+            1950: 34.72, 1951: 34.72, 1952: 34.60, 1953: 34.84, 1954: 35.04, 1955: 35.03,
+            1956: 34.99, 1957: 34.95, 1958: 35.10, 1959: 35.10, 1960: 35.27, 1961: 35.25,
+            1962: 35.23, 1963: 35.09, 1964: 35.10, 1965: 35.12, 1966: 35.13, 1967: 34.95,
+            1968: 39.31, 1969: 41.28, 1970: 36.02, 1971: 40.62, 1972: 58.42, 1973: 97.39,
+            1974: 154.00, 1975: 160.86, 1976: 124.74, 1977: 147.84, 1978: 193.40, 1979: 306.00,
+            1980: 615.00, 1981: 460.00, 1982: 376.00, 1983: 424.00, 1984: 361.00, 1985: 317.00,
+            1986: 368.00, 1987: 447.00, 1988: 437.00, 1989: 381.00, 1990: 383.51, 1991: 362.11,
+            1992: 343.82, 1993: 359.77, 1994: 384.00, 1995: 383.79, 1996: 387.81, 1997: 331.02,
+            1998: 294.24, 1999: 278.98, 2000: 279.11, 2001: 271.04, 2002: 309.73, 2003: 363.38,
+            2004: 409.72, 2005: 444.74, 2006: 603.46, 2007: 695.39, 2008: 871.96, 2009: 972.35,
+            2010: 1224.53, 2011: 1571.52, 2012: 1668.98, 2013: 1411.23, 2014: 1266.40, 2015: 1160.60,
+            // Updated prices from user
+            2016: 1250.74, 2017: 1258.70, 2018: 1269.69, 2019: 1393.86, 2020: 1771.07,
+            2021: 1799.02, 2022: 1802.45, 2023: 1943.96, 2024: 2406.55, 2025: 3111.39
+        };
+
+        let currentGoldPrice = 3400; // Default gold price - UPDATE THIS MONTHLY, todays july 23rd, 2025
+        let adjustedMinWage1970 = 150; // $1.60 in 1970 = $150 today in gold - UPDATE THIS WITH GOLD PRICE
+        let adjustedAvgWage1970 = 280; // Average wage in 1970 adjusted for gold - UPDATE THIS WITH GOLD PRICE
+
+
+        function updateGoldPrice() {
+            const newPrice = parseFloat(document.getElementById('newGoldPrice').value);
+            if (newPrice && newPrice > 0) {
+                currentGoldPrice = newPrice;
+                document.getElementById('goldPriceValue').textContent = newPrice.toFixed(0);
+                document.getElementById('newGoldPrice').value = '';
+                calculateGoldValue();
+            }
+        }
+        
+        function calculateWageComparison() {
+    const hourlyWage = parseFloat(document.getElementById('hourlyWage').value);
+    
+    if (!hourlyWage || hourlyWage <= 0) {
+        document.getElementById('wageComparison').innerHTML = '';
+        return;
+    }
+    
+    const minWagePercentage = (hourlyWage / adjustedMinWage1970) * 100;
+    const minWageMultiplier = hourlyWage / adjustedMinWage1970;
+    const avgWagePercentage = (hourlyWage / adjustedAvgWage1970) * 100;
+    
+    // Calculate years to buy $1M house (assuming 40 hours/week, 52 weeks/year)
+    const annualWage = hourlyWage * 40 * 52;
+    const yearsForHouse = 1000000 / annualWage;
+    
+    document.getElementById('wageComparison').innerHTML = 
+        `$${hourlyWage.toLocaleString()} an hour is ${minWagePercentage.toFixed(0)}% or ${minWageMultiplier.toFixed(1)}x what minimum wage was in 1970, and ${avgWagePercentage.toFixed(0)}% of average wage in 1970, and would take ${yearsForHouse.toFixed(1)} years to buy a million dollar house, vs minimum wage could buy a million dollar house in 3 years, and the average person's wage could afford a $1M house in 1.7 years.<br><br>It is also worth noting here that the average house back in 1970 was actually twice the amount of gold as it takes now, at $2,208,772 a house (they were more expensive back then, as was everything else).`;
+}
+
+        function calculateGoldValue() {
+            const dollarAmount = parseFloat(document.getElementById('dollarAmount').value) || 0;
+            const year = parseInt(document.getElementById('year').value) || 1970;
+            
+            const historicalPrice = goldPrices[year];
+            
+            if (!historicalPrice || year < 1833 || year > 2025) {
+    document.getElementById('goldOunces').innerHTML = 
+        '<div class="error">Please enter a year between 1833 and 2025</div>';
+    document.getElementById('todayValue').innerHTML = '';
+    return;
+}
+            
+            const goldOunces = dollarAmount / historicalPrice;
+            const todayValue = goldOunces * currentGoldPrice;
+            
+            document.getElementById('goldOunces').innerHTML = 
+                `<strong>${dollarAmount.toLocaleString('en-US', {style: 'currency', currency: 'USD'})} in ${year}</strong> = <strong>${goldOunces.toFixed(4)} oz</strong> of gold`;
+            
+            document.getElementById('todayValue').innerHTML = 
+                `That same gold is worth <strong>${todayValue.toLocaleString('en-US', {style: 'currency', currency: 'USD'})}</strong> today`;
+        }
+
+        // Event listeners
+        document.getElementById('dollarAmount').addEventListener('input', calculateGoldValue);
+        document.getElementById('year').addEventListener('input', calculateGoldValue);
+        document.getElementById('hourlyWage').addEventListener('input', calculateWageComparison);
+
+        // Initialize
+        calculateGoldValue();
+    </script>
+</body>
+</html>        }
+        
+        .subtitle {
+            text-align: center;
+            color: #333;
+            font-size: 1.1em;
+            margin-bottom: 30px;
+            line-height: 1.4;
+        }
+        
+        .calculator {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .input-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #555;
+        }
+        
+        input {
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus {
+            border-color: #DAA520;
+            outline: none;
+        }
+        
+        .results {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #DAA520;
+        }
+        
+        .result-item {
+            font-size: 1.1em;
+            margin: 10px 0;
+            padding: 8px;
+            background: white;
+            border-radius: 4px;
+        }
+        
+        .current-gold {
+            background: #e8f4f8;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: center;
+            border: 2px solid #4CAF50;
+        }
+        
+        .gold-update {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+        
+        .gold-update input {
+            width: 120px;
+            padding: 8px;
+        }
+        
+        .gold-update button, .gold-update a {
+            padding: 8px 12px;
+            background: #DAA520;
+            color: white;
+            text-decoration: none;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .gold-update button:hover, .gold-update a:hover {
+            background: #B8860B;
+        }
+        
+        .pdf-section {
+            margin-top: 40px;
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 20px;
+            align-items: start;
+        }
+        
+        .pdf-container {
+            text-align: center;
+        }
+        
+        .pdf-embed {
+            width: 100%;
+            height: 600px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        
+        .suggestion-box {
+            background: #fff3cd;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #ffeaa7;
+        }
+        
+        .suggestion-box h3 {
+            color: #856404;
+            margin-bottom: 15px;
+        }
+        
+        .suggestion-box p {
+            color: #856404;
+            line-height: 1.5;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+            }
+            
+            .calculator {
+                grid-template-columns: 1fr;
+            }
+            
+            .pdf-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .suggestion-box {
+                order: -1;
+            }
+            
+            .container {
+                padding: 15px;
+            }
+            
+            input {
+                font-size: 16px; /* Prevents zoom on iOS */
+            }
+        }
+        
+        .loading {
+            color: #666;
+            font-style: italic;
+        }
+        
+        .error {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+    <h1>Adjusted by Gold Calculator</h1>
+    <p class="subtitle">
+        Adjust by gold to see the real inflation numbers. 
+        <br>
+        <a href="https://www.dol.gov/agencies/whd/minimum-wage/history/chart" target="_blank" rel="noopener noreferrer">Minimum Wage History</a> • 
+        <a href="https://www.ssa.gov/oact/cola/AWI.html" target="_blank" rel="noopener noreferrer">Average Wage Index (SSA)</a> • 
+        <a href="https://www.huduser.gov/periodicals/ushmc/winter2001/histdat08.htm" target="_blank" rel="noopener noreferrer">Historical Housing Prices (HUD)</a>
+    </p>
+        
+        <div class="current-gold" id="currentGoldPrice">
+            <div><strong>Current Gold Price: $<span id="goldPriceValue">3400</span> per ounce</strong> (as of July 2025)</div>
+            <div class="gold-update">
+                <input type="number" id="newGoldPrice" placeholder="New price" step="0.01">
+                <button onclick="updateGoldPrice()">Update Price</button>
+                <a href="https://www.google.com/search?q=gold+price" target="_blank">Check Google</a>
+            </div>
+        </div>
+        
+        <div class="calculator">
+            <div class="input-group">
+                <label for="dollarAmount">Dollar Amount:</label>
+                <input type="number" id="dollarAmount" value="1" min="0" step="0.01">
+            </div>
+            
+            <div class="input-group">
+                <label for="year">Year:</label>
+                <input type="number" id="year" value="1970" min="1833" max="2025">
+            </div>
+        </div>
+        
+        <div class="results" id="results">
+            <div class="result-item" id="goldOunces"></div>
+            <div class="result-item" id="todayValue"></div>
+        </div>
+        
+        <div class="pdf-section">
+            <div class="pdf-container">
+                <h3>Historical Gold Prices (1833-Present)</h3>
+                <embed src="historic_gold_prices_1833_pres.pdf" type="application/pdf" class="pdf-embed">
+<!--                 <p style="margin-top: 10px; font-size: 0.9em; color: #666;">
+                    Right-click to download the PDF if needed
+                </p> -->
+            </div>
+            
+            <div class="suggestion-box">
+                <h3>Try This:</h3>
+                <p>Put in the price of your parents' house and the year they bought it, and then put in their hourly wage of the same year.</p>
+<p style="margin-top: 10px;">
+  Minimum wage was $1.60 an hour in 1970, right before we left the gold standard <br>
+    Housing prices havent increased if you adjust for gold, they are the exact same prices that they were in 1920 <br>
+<!--   Real estate isn't an investment, it's just a way to keep your money against the government's inflation!
+  That's why big corporations are buying homes now but they never did in the past! If they would have kept on the gold standard it would still be the same price as back then! -->
+</p>
+            </div>
         </div>
     </div>
 
